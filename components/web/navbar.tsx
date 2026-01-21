@@ -1,29 +1,69 @@
-import { buttonVariants } from "../ui/button";
+"use client";
+
+import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { ModeToggle } from "./theme-toggle";
+import { useConvexAuth } from "convex/react";
+import { authClient } from "@/lib/auth-client";
 
 export function Navbar() {
-    return (
-        <nav className="w-full py-5 flex items-center justify-between">
-            <div className="flex items-center gap-8">
-                <Link href="/">
-                    <h1 className="text-3xl font-bold">
-                        Next<span className="text-blue-500">Pro</span>
-                    </h1>
-                </Link>
+  const { isAuthenticated, isLoading } = useConvexAuth();
 
-                <div className="flex items-center gap-2">
-                    <Link className={buttonVariants({variant: "ghost"})} href="/">Home</Link>
-                    <Link className={buttonVariants({variant: "ghost"})} href="/blog">Blog</Link>
-                    <Link className={buttonVariants({variant: "ghost"})} href="/create">Create</Link>
-                </div>
-            </div>
+  return (
+    <nav className="w-full py-5 flex items-center justify-between">
+      <div className="flex items-center gap-8">
+            <Link href="/">
+              <h1 className="text-3xl font-bold">
+                Next<span className="text-blue-500">Pro</span>
+              </h1>
+            </Link>
 
             <div className="flex items-center gap-2">
-                <Link className={buttonVariants()} href="/auth/sign-up">Sign up</Link>
-                <Link className={buttonVariants({variant: "outline"})} href="/auth/login">Login</Link>
-                <ModeToggle />
+              <Link
+                href="/"
+                className={buttonVariants({ variant: "ghost" })}
+              >
+                Home
+              </Link>
+
+              <Link
+                href="/blog"
+                className={buttonVariants({ variant: "ghost" })}
+              >
+                Blog
+              </Link>
+
+              <Link
+                href="/create"
+                className={buttonVariants({ variant: "ghost" })}
+              >
+                Create
+              </Link>
             </div>
-        </nav>
-    )
+      </div>
+
+      <div className="flex items-center gap-2">
+        {isLoading ? null : isAuthenticated ? (
+          <Button onClick={() => authClient.signOut({})}>Logout</Button>
+        ) : (
+            <>
+                <Link
+                    href="/auth/sign-up"
+                    className={buttonVariants()}
+                >
+                    Sign up
+                </Link>
+
+                <Link
+                    href="/auth/login"
+                    className={buttonVariants({ variant: "outline" })}
+                >
+                    Login
+                </Link>
+              </>
+            )}
+            <ModeToggle />
+        </div>
+    </nav>
+  );
 }

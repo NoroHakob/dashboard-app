@@ -8,11 +8,12 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 const signUpSchema = z.object({
   name: z.string().min(1, "Full Name is required"),
   email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 type SignUpFields = "name" | "email" | "password";
@@ -28,9 +29,17 @@ export default function SignUpPage() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof signUpSchema>) => {
-    console.log("Form submitted:", values);
-  };
+  // const onSubmit = (values: z.infer<typeof signUpSchema>) => {
+  //   console.log("Form submitted:", values);
+  // };
+
+  async function onSubmit(data: z.infer<typeof signUpSchema>) {
+    await authClient.signUp.email({
+      email: data.email,
+      name: data.name,
+      password: data.password
+    })
+  }
 
   return (
     <div className="max-w-md mx-auto mt-10">
