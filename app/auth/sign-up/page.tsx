@@ -29,10 +29,6 @@ export default function SignUpPage() {
     },
   });
 
-  // const onSubmit = (values: z.infer<typeof signUpSchema>) => {
-  //   console.log("Form submitted:", values);
-  // };
-
   async function onSubmit(data: z.infer<typeof signUpSchema>) {
     await authClient.signUp.email({
       email: data.email,
@@ -45,7 +41,7 @@ export default function SignUpPage() {
     <div className="max-w-md mx-auto mt-10">
       <Card>
         <CardHeader>
-          <CardTitle>Sign Up</CardTitle>
+          <CardTitle>Sign up</CardTitle>
           <CardDescription>Create an account to get started</CardDescription>
         </CardHeader>
         <CardContent>
