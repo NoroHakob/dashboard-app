@@ -6,9 +6,11 @@ import { ModeToggle } from "./theme-toggle";
 import { useConvexAuth } from "convex/react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
   const { isAuthenticated, isLoading } = useConvexAuth();
+  const router = useRouter()
 
   return (
     <nav className="w-full py-5 flex items-center justify-between">
@@ -49,6 +51,7 @@ export function Navbar() {
             fetchOptions: {
               onSuccess: () => {
                 toast.success("Logged out successfully")
+                router.push("/")
               },
               onError: (error) => {
                 toast.error(error.error.message)

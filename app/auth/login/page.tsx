@@ -23,11 +23,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";              
+import { useRouter } from "next/navigation"; 
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 const fields: Array<keyof LoginFormValues> = ["email", "password"];
 
 export default function LoginPage() {
+  const [isPending, startTransition] = useTransition() 
+  const router = useRouter(); 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -38,14 +44,26 @@ export default function LoginPage() {
   });
 
   async function onSubmit(data: LoginFormValues) {
-    try {
-      await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-      });
-    } catch (error) {
-      console.error("Login failed:", error);
-    }
+    startTransition(async() => {
+        try {
+          await authClient.signIn.email({
+            email: data.email,
+            password: data.password,
+            fetchOptions: {
+              onSuccess: () => {
+                toast.success("Logged in successfully"); 
+                router.push("/");                        
+              },
+              onError: (error) => {
+                toast.error(error.error.message);
+              },
+            },
+          });
+        } catch (error) {
+          console.error("Login failed:", error);
+        }
+    })
+
   }
 
   return (
@@ -70,7 +88,7 @@ export default function LoginPage() {
                     </FieldLabel>
 
                     <Input
-                      {...field} 
+                      {...field}
                       type={fieldName === "password" ? "password" : "email"}
                       placeholder={
                         fieldName === "email"
@@ -81,7 +99,7 @@ export default function LoginPage() {
                     />
 
                     {fieldState.error && (
-                      <FieldError errors={[fieldState.error]} />
+                        <FieldError errors={[fieldState.error]} />
                     )}
                   </Field>
                 )}
@@ -91,9 +109,16 @@ export default function LoginPage() {
             <Button
               type="submit"
               className="bg-blue-600 text-white w-full"
-              disabled={form.formState.isSubmitting}
+              disabled={isPending}
             >
-              {form.formState.isSubmitting ? "Logging in..." : "Login"}
+                {isPending ? (
+                    <>
+                        <Loader2 className="size-4 animate-spin"/>
+                        <span>Loading...</span>
+                    </>
+                ) : (
+                    <span>Login</span>
+                )}
             </Button>
           </FieldGroup>
         </form>

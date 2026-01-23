@@ -9,6 +9,10 @@ import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";           
+import { useRouter } from "next/navigation"; 
+import { useTransition } from "react";
+import { Loader2 } from "lucide-react";
 
 const signUpSchema = z.object({
   name: z.string().min(1, "Full Name is required"),
@@ -16,10 +20,12 @@ const signUpSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
-type SignUpFields = "name" | "email" | "password";
+type SignUpFields = keyof z.infer<typeof signUpSchema>;
 const fields: SignUpFields[] = ["name", "email", "password"];
 
 export default function SignUpPage() {
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter();
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -30,10 +36,25 @@ export default function SignUpPage() {
   });
 
   async function onSubmit(data: z.infer<typeof signUpSchema>) {
-    await authClient.signUp.email({
-      email: data.email,
-      name: data.name,
-      password: data.password
+    startTransition(async() => {
+      try {
+        await authClient.signUp.email({
+          email: data.email,
+          name: data.name,
+          password: data.password,
+          fetchOptions: {
+            onSuccess: () => {
+              toast.success("Signed up successfully"); 
+              router.push("/auth/login");             
+            },
+            onError: (error) => {
+              toast.error(error.error.message);
+            },
+          },
+        });
+      } catch (error) {
+        console.error("Sign up failed:", error);
+      }
     })
   }
 
@@ -54,11 +75,10 @@ export default function SignUpPage() {
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field>
-                      <FieldLabel>{fieldName[0].toUpperCase() + fieldName.slice(1)}</FieldLabel>
+                      <FieldLabel className="capitalize">{fieldName}</FieldLabel>
                       <Input
-                        {...field}
+                        {...field} 
                         type={fieldName === "password" ? "password" : "text"}
-                        value={field.value as string}
                         placeholder={
                           fieldName === "name"
                             ? "Norayr Hakobyan"
@@ -68,14 +88,25 @@ export default function SignUpPage() {
                         }
                         aria-invalid={fieldState.invalid}
                       />
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      {fieldState.error && <FieldError errors={[fieldState.error]} />}
                     </Field>
                   )}
                 />
               ))}
 
-              <Button type="submit" className="bg-blue-600 text-white w-full">
-                Sign Up
+              <Button
+                type="submit"
+                className="bg-blue-600 text-white w-full"
+                disabled={isPending}
+              >
+                  {isPending ? (
+                      <>
+                          <Loader2 className="size-4 animate-spin"/>
+                          <span>Loading...</span>
+                      </>
+                  ) : (
+                      <span>Sign up</span>
+                  )}
               </Button>
             </FieldGroup>
           </form>
