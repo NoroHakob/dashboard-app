@@ -1,5 +1,6 @@
 "use client"
 
+import { CreateBlogAction } from "@/app/actions";
 import { postSchema } from "@/app/schemas/blog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,11 +30,15 @@ export default function CreateRoute() {
       });
 
       function onSubmit(values: z.infer<typeof postSchema>) {
-        startTransition(() => {
-            mutation({
-                body: values.content,
-                title: values.title
-            })
+        startTransition(async() => {
+            // mutation({
+            //     body: values.content,
+            //     title: values.title
+            // })
+
+            console.log("Hey this runs on the client side")
+
+            await CreateBlogAction()
 
             toast.success("Everything was fine")
 
@@ -51,7 +56,7 @@ export default function CreateRoute() {
             <Card className="w-full max-w-xl mx-auto">
                 <CardHeader>
                     <CardTitle>Create Blog Article</CardTitle>
-                    {/* <CardDescription>Create a new blog article</CardDescription> */}
+                    <CardDescription>Create a new blog article</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
