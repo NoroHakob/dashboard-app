@@ -20,7 +20,6 @@ import z from "zod";
 export default function CreateRoute() {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
-    const mutation = useMutation(api.posts.createPost)
     const form = useForm<z.infer<typeof postSchema>>({
         resolver: zodResolver(postSchema),
         defaultValues: {
@@ -31,22 +30,10 @@ export default function CreateRoute() {
 
       function onSubmit(values: z.infer<typeof postSchema>) {
         startTransition(async() => {
-            // mutation({
-            //     body: values.content,
-            //     title: values.title
-            // })
 
             console.log("Hey this runs on the client side")
 
-            // await CreateBlogAction()
-
-            await fetch ("api/create-blog", {
-                method: "POST"
-            })
-
-            toast.success("Everything was fine")
-
-            router.push("/")
+            await CreateBlogAction(values)
         })
       } 
 

@@ -15,5 +15,7 @@ export const createPost = mutation({
       body: args.body,
       authorId: user._id,
     });
+
+    return blogArticle
   },
 });
