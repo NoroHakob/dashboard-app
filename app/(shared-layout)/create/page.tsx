@@ -38,7 +38,11 @@ export default function CreateRoute() {
 
             console.log("Hey this runs on the client side")
 
-            await CreateBlogAction()
+            // await CreateBlogAction()
+
+            await fetch ("api/create-blog", {
+                method: "POST"
+            })
 
             toast.success("Everything was fine")
 
