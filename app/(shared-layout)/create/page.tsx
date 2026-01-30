@@ -21,7 +21,8 @@ export default function CreateRoute() {
         resolver: zodResolver(postSchema),
         defaultValues: {
           content: "",
-          title: ""
+          title: "",
+          image: undefined,
         },
       });
 
@@ -81,6 +82,28 @@ export default function CreateRoute() {
                                     </Field>
                                 )}
                             />
+
+                            <Controller
+                                name="image"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field>
+                                    <FieldLabel className="capitalize">Image</FieldLabel>
+                                    <Input
+                                        aria-invalid={fieldState.invalid}
+                                        placeholder="Super cool blog content"                  
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(event) => {
+                                            const file = event.target.files[0]
+                                            field.onChange(file)
+                                        }}
+                                    />
+                                    {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
+                                )}
+                            />
+
                             <Button
                                 type="submit"
                                 className="bg-blue-600 text-white w-full"
