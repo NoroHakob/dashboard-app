@@ -1,16 +1,18 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
-        hostname: "images.unsplash.com",
         protocol: "https",
-        port: ""
-      }
-    ]
-  }
-};
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.convex.cloud", 
+      },
+    ],
+  },
+}
 
-export default nextConfig;
+export default nextConfig

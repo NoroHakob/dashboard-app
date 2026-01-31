@@ -6,19 +6,22 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
 
-type Post = Doc<"posts">
+type PostWithImage = Doc<"posts"> & {
+  imageUrl: string | null
+}
 
-export default function BlogGrid({ posts }: { posts: Post[] }) {
+export default function BlogGrid({ posts }: { posts: PostWithImage[] }) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {posts.map((post) => (
         <Card className="pt-0 text-center" key={post._id}>
           <div className="relative h-48 w-full overflow-hidden">
             <Image
-              src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1"
-              alt="Blog image"
+              src={post.imageUrl ?? "https://images.unsplash.com/photo-1524504388940-b1c1722653e1"}
+              alt={post.title}
               fill
-              className="rounded-t-lg"
+              className="rounded-t-lg object-cover"
+              sizes="(max-width: 768px) 100vw, 33vw"
             />
           </div>
 

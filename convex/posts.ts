@@ -31,7 +31,17 @@ export const getPosts = query({
   args: {},
   handler: async (ctx, args) => {
     const posts = await ctx.db.query("posts").order("desc").collect()
-    return posts
+
+    return await Promise.all(
+      posts.map(async (post) => {
+        const resolvedImageUrl = post.imageStorageId !== undefined ? await ctx.storage.getUrl(post.imageStorageId) : null 
+        
+        return {
+          ...post,
+          imageUrl: resolvedImageUrl
+        }
+      })
+    )
   },
 })
 

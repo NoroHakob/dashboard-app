@@ -1,7 +1,6 @@
 import { fetchQuery } from "convex/nextjs"
 import { api } from "@/convex/_generated/api"
 import BlogGrid from "./blogGrid"
-import { Skeleton } from "@/components/ui/skeleton"
 
 export default async function LoadBlogList() {
   await new Promise((resolve) => setTimeout(resolve, 5000))
