@@ -10,6 +10,8 @@ type PostWithImage = Doc<"posts"> & {
   imageUrl: string | null
 }
 
+export const dynamic = "force-static"
+
 export default function BlogGrid({ posts }: { posts: PostWithImage[] }) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
