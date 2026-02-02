@@ -1,6 +1,10 @@
-import LoadBlogList from "./loadBlogList"
+import { api } from "@/convex/_generated/api";
+import { fetchQuery } from "convex/nextjs";
+import BlogGrid from "./blogGrid";
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const postsData = await fetchQuery(api.posts.getPosts, {});
+
   return (
     <div className="py-12">
       <div className="text-center pb-12">
@@ -12,7 +16,7 @@ export default function BlogPage() {
         </p>
       </div>
 
-      <LoadBlogList />
+      <BlogGrid posts={postsData} />
     </div>
-  )
+  );
 }
