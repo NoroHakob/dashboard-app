@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, buttonVariants } from "../ui/button";
+import { Button } from "../ui/button";
+import { buttonVariants } from "../ui/button-variants";
 import Link from "next/link";
 import { ModeToggle } from "./theme-toggle";
 import { useConvexAuth } from "convex/react";

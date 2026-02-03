@@ -1,7 +1,7 @@
 "use client"
 
 import { Doc } from "@/convex/_generated/dataModel";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
