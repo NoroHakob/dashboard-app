@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button-variants"
-import { fetchQuery } from "convex/nextjs"
+import { fetchQuery, preloadQuery } from "convex/nextjs"
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel"
 import Image from "next/image"
@@ -18,6 +18,10 @@ export default async function PostIdRoute({ params }: PostIdRouteProps) {
   const { postId } = await params
 
   const post = await fetchQuery(api.posts.getPostById, { postId: postId })
+  const preloadedComments = await preloadQuery(api.comments.getCommentsByPost,
+    {
+      postId: postId
+    })
   
 
   if (!post) {
@@ -66,7 +70,7 @@ export default async function PostIdRoute({ params }: PostIdRouteProps) {
         </p>
 
       <Separator className="my-8"/>
-      <CommentSection />
+      <CommentSection preloadedComments={preloadedComments}/>
     </div>
   )
 }

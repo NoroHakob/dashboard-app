@@ -11,7 +11,7 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useParams } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
-import { useMutation, useQuery } from "convex/react";
+import { Preloaded, useMutation, usePreloadedQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { startTransition, useTransition } from "react";
@@ -19,9 +19,11 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
 
-export function CommentSection() {
+export function CommentSection(props:{
+    preloadedComments: Preloaded<typeof api.comments.getCommentsByPost>
+}) {
     const params = useParams<{postId: Id<"posts">}>()
-    const data = useQuery(api.comments.getCommentsByPost, {postId: params.postId})
+    const data = usePreloadedQuery(props.preloadedComments)
     const [isPending, setTransition] = useTransition() 
     const createComment = useMutation(api.comments.createComment)
     const form = useForm({
