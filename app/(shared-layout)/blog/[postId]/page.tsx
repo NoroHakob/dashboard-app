@@ -18,6 +18,7 @@ export default async function PostIdRoute({ params }: PostIdRouteProps) {
   const { postId } = await params
 
   const post = await fetchQuery(api.posts.getPostById, { postId: postId })
+  
 
   if (!post) {
     return (
