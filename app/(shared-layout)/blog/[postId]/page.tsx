@@ -8,6 +8,8 @@ import Image from "next/image"
 import { Separator } from "@/components/ui/separator"
 import { CommentSection } from "@/components/web/CommentSection"
 import { Metadata } from "next"
+import { PostPresence } from "@/components/web/PostPresence"
+import { getToken } from "@/lib/auth-server"
 
 interface PostIdRouteProps {
     params: Promise<{
@@ -36,11 +38,14 @@ export async function generateMetadata({params}: PostIdRouteProps): Promise<Meta
 export default async function PostIdRoute({ params }: PostIdRouteProps) {
   const { postId } = await params
 
-  const [post, preloadedComments] = await Promise.all([
+  const token = await getToken()
+
+  const [post, preloadedComments, userId] = await Promise.all([
     await fetchQuery(api.posts.getPostById, { postId: postId }),
     await preloadQuery(api.comments.getCommentsByPost, {
         postId: postId
-    })
+    }),
+    await fetchQuery(api.presence.getUserId, {}, { token })
   ])
 
   
@@ -78,10 +83,12 @@ export default async function PostIdRoute({ params }: PostIdRouteProps) {
         <h1 className="text-4xl font-bold tracking-tight text-foreground">
             {post.title}
         </h1>
-
-        <p className="text-sm text-muted-foreground">
-            Posted on: {new Date(post._creationTime).toLocaleDateString("am-AM")}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-muted-foreground">
+              Posted on: {new Date(post._creationTime).toLocaleDateString("am-AM")}
+          </p>
+          {userId && <PostPresence roomId={post._id} userId={userId}/>}
+        </div>
       </div>
 
       <Separator className="my-8"/>
