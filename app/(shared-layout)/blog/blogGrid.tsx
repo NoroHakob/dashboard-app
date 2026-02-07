@@ -10,7 +10,7 @@ type PostWithImage = Doc<"posts"> & {
   imageUrl: string | null
 };
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 export const revalidate = 30;
 
 export default function BlogGrid({ posts }: { posts: PostWithImage[] }) {
