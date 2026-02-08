@@ -2,7 +2,7 @@ import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "convex/nextjs";
 import BlogGrid from "./blogGrid";
 import { Metadata } from "next";
-import { connection } from "next/server";
+import { cacheLife, cacheTag } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Blog | Next.js 16 Tutorial",
@@ -12,10 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  await connection()
-  // "use cache"
-  // cacheLife("hours")
-  // cacheTag("blog")
+  "use cache"
+  cacheLife("hours")
+  cacheTag("blog")
   const postsData = await fetchQuery(api.posts.getPosts, {});
 
   return (
