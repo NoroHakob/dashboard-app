@@ -3,6 +3,7 @@ import { fetchQuery } from "convex/nextjs";
 import BlogGrid from "./blogGrid";
 import { Metadata } from "next";
 import { cacheLife, cacheTag } from "next/cache";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Blog | Next.js 16 Tutorial",
