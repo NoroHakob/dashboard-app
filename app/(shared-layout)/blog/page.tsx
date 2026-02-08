@@ -12,9 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  "use cache"
-  cacheLife("hours")
-  cacheTag("blog")
+  // "use cache"
+  // cacheLife("hours")
+  // cacheTag("blog")
+  await connection()
   const postsData = await fetchQuery(api.posts.getPosts, {});
 
   return (
